@@ -1,0 +1,21 @@
+services:
+  version: '3.9'
+services:
+  redis:
+    image: redis:7.4-alpine
+    container_name: agent-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: agent-pgvector
+    environment:
+      POSTGRES_DB: agent_memory_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
