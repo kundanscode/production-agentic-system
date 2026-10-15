@@ -1,3 +1,25 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: banking-mcp-server
+
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: enterprise-banking-mcp-server
+        version: 1.0.0
+        type: SYNC
+        sse-message-endpoint: /mcp/message
+        capabilities:
+          tool: true
+          resource: false
+          prompt: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
