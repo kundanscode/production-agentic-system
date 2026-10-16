@@ -34,12 +34,13 @@ public class ServiceSubAgent {
                 .toArray(ToolCallback[]::new);
 
         this.serviceClient = builder
-                .defaultSystem(
-                        """
-                                You are the Banking Service Sub-Agent.
-                                Always pass the exact customerId and customerTier to increaseCreditCardLimit.
-                                For requestChequeBook, pass addressConfirmed=true ONLY if the user explicitly confirmed their address.
-                                """)
+                .defaultSystem("""
+                        You are the Banking Service Sub-Agent.
+                        Always pass the exact customerId and customerTier to increaseCreditCardLimit.
+                        For requestChequeBook, pass addressConfirmed=true ONLY if the user explicitly confirmed their address.
+                        After receiving tool results, return a clear confirmation or status message in natural language.
+                        Never return raw JSON to the user.
+                        """)
                 .defaultTools((Object[]) serviceTools)
                 .build();
     }

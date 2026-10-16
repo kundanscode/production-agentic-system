@@ -13,7 +13,15 @@ public class TransactionsMcpTools {
     @Tool(name = "getRecentTransactions", description = "Fetch the last N transactions for the authenticated customer")
     public List<Map<String, Object>> getRecentTransactions(
             @ToolParam(description = "Authenticated Customer ID") String customerId,
-            @ToolParam(description = "Number of recent transactions to fetch") int count) {
+            @ToolParam(description = "Number of recent transactions to fetch", required = false) Object count) {
+        int limit = 5;
+        if (count instanceof Number n) {
+            limit = n.intValue();
+        } else if (count != null) {
+            try {
+                limit = Integer.parseInt(count.toString().trim());
+            } catch (Exception ignored) {}
+        }
         return List.of(
                 Map.of("txId", "TXN_901", "date", "2026-10-14", "merchant", "Amazon", "amount", 1200.00, "type",
                         "DEBIT"),

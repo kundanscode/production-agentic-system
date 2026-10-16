@@ -16,6 +16,7 @@ import java.util.Map;
 public class CoordinatorAgentService {
 
     private final ChatClient coordinatorClient;
+    private final ChatClient summarizerClient;
     private final RedisChatMemory redisChatMemory;
     private final ShortTermSessionStateService sessionStateService;
     private final EpisodicMemoryService episodicMemoryService;
@@ -25,6 +26,7 @@ public class CoordinatorAgentService {
 
     public CoordinatorAgentService(
             ChatClient.Builder builder,
+            org.springframework.ai.ollama.OllamaChatModel ollamaChatModel,
             RedisChatMemory redisChatMemory,
             PiiRedactionAdvisor piiRedactionAdvisor,
             AccountsSubAgent accountsSubAgent,
@@ -43,6 +45,7 @@ public class CoordinatorAgentService {
         this.semanticMemoryRepository = semanticMemoryRepository;
         this.proceduralMemoryService = proceduralMemoryService;
         this.llmRouterService = llmRouterService;
+        this.summarizerClient = ChatClient.builder(ollamaChatModel).build();
 
         this.coordinatorClient = builder
                 .defaultAdvisors(
@@ -102,6 +105,12 @@ public class CoordinatorAgentService {
                 - If a user asks a compound question (e.g. balance AND transactions), call BOTH Sub-Agents and synthesize a single clear answer.
                 - If the user expresses a communication preference (e.g. WhatsApp vs SMS), call saveCustomerPreference.
                 - Never ask the customer for their Customer ID; always pass '%s' and Tier '%s'.
+
+                RESPONSE FORMAT (MANDATORY):
+                - After receiving tool results, you MUST synthesize the data into a friendly, conversational sentence.
+                - Example: "Your current account balance is $5,432.10. Is there anything else I can help you with?"
+                - NEVER return raw JSON, tool names, or internal data structures to the user.
+                - Always end with a helpful follow-up offer.
                 """
                 .formatted(
                         route,
@@ -127,7 +136,7 @@ public class CoordinatorAgentService {
 
     public EpisodicMemoryService.EpisodeExtraction closeAndArchiveSession(String customerId, String sessionId) {
         var extraction = episodicMemoryService.summarizeAndArchiveSession(
-                coordinatorClient, redisChatMemory, customerId, sessionId);
+                summarizerClient, redisChatMemory, customerId, sessionId);
         sessionStateService.clearSessionState(customerId, sessionId);
         return extraction;
     }

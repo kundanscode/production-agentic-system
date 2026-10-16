@@ -40,16 +40,18 @@ public class EpisodicMemoryService {
             String outcome) {
 
         long epochSeconds = Instant.now().getEpochSecond();
+        Map<String, Object> metadata = new java.util.HashMap<>();
+        metadata.put("memory_type", "episodic");
+        metadata.put("customer_id", customerId != null ? customerId : "UNKNOWN");
+        metadata.put("session_id", sessionId != null ? sessionId : "UNKNOWN");
+        metadata.put("intent", intent != null ? intent : "General inquiry");
+        metadata.put("sentiment", sentiment != null ? sentiment : "Neutral");
+        metadata.put("outcome", outcome != null ? outcome : "Completed");
+        metadata.put("created_at_epoch", epochSeconds);
+
         Document episodeDoc = new Document(
-                summary,
-                Map.of(
-                        "memory_type", "episodic",
-                        "customer_id", customerId,
-                        "session_id", sessionId,
-                        "intent", intent,
-                        "sentiment", sentiment,
-                        "outcome", outcome,
-                        "created_at_epoch", epochSeconds));
+                summary != null ? summary : "Customer session summary",
+                metadata);
         vectorStore.add(List.of(episodeDoc));
     }
 
@@ -109,6 +111,10 @@ public class EpisodicMemoryService {
                 .user(formattedTranscript)
                 .call()
                 .entity(EpisodeExtraction.class);
+
+        if (extraction == null) {
+            extraction = new EpisodeExtraction("Customer session closed", "Customer support inquiry", "Neutral", "Resolved");
+        }
 
         saveEpisodeSummary(
                 customerId,

@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: agent-orchestrator
+  docker:
+    compose:
+      enabled: false
 
   # 1. PostgreSQL Connection (Episodic + Semantic Memory)
   datasource:
@@ -20,18 +23,15 @@ spring:
 
   # 3. Spring AI Configuration
   ai:
-    # Local Self-Hosted Ollama LLM & Embedding Model
     ollama:
       base-url: http://localhost:11434
       chat:
-        options:
-          model: qwen2.5-coder:14b
-          temperature: 0.1
+        model: llama3.1:8b
+        temperature: 0.1
       embedding:
-        options:
-          model: nomic-embed-text
-
-    # PgVector Store (Long-Term Episodic Memory)
+        model: nomic-embed-text
+        
+        # PgVector Store (Long-Term Episodic Memory)
     vectorstore:
       pgvector:
         initialize-schema: true
