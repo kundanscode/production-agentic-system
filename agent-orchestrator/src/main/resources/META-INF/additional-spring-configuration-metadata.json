@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "spring.ai.mcp.client.sse.connections.banking-mcp.url",
+      "type": "java.lang.String",
+      "description": "Base URL for the SSE MCP server connection."
+    },
+    {
+      "name": "spring.ai.mcp.client.sse.connections.banking-mcp.sse-endpoint",
+      "type": "java.lang.String",
+      "description": "SSE endpoint path for the MCP server."
+    },
+    {
+      "name": "spring.ai.mcp.client.streamable-http.connections.banking-mcp.url",
+      "type": "java.lang.String",
+      "description": "Base URL for the Streamable HTTP MCP server connection."
+    },
+    {
+      "name": "spring.ai.mcp.client.streamable-http.connections.banking-mcp.endpoint",
+      "type": "java.lang.String",
+      "description": "Streamable HTTP endpoint path for the MCP server."
+    }
+  ]
+}

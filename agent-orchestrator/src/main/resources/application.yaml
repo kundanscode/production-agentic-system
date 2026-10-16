@@ -1,3 +1,70 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: agent-orchestrator
+
+  # 1. PostgreSQL Connection (Episodic + Semantic Memory)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/agent_memory_db
+    username: postgres
+    password: secretpassword
+    driver-class-name: org.postgresql.Driver
+
+  # 2. Redis Connection (Distributed Short-Term Memory)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # 3. Spring AI Configuration
+  ai:
+    # Local Self-Hosted Ollama LLM & Embedding Model
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        options:
+          model: qwen2.5-coder:14b
+          temperature: 0.1
+      embedding:
+        options:
+          model: nomic-embed-text
+
+    # PgVector Store (Long-Term Episodic Memory)
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 768
+
+    # MCP Client (Connects to your running Project 3 on Port 8081)
+    mcp:
+      client:
+        enabled: true
+        name: banking-orchestrator-mcp-client
+        version: 1.0.0
+        type: SYNC
+        streamable-http:
+          connections:
+            banking-mcp:
+              url: http://localhost:8081
+              endpoint: /mcp
+
+    # AI Observability (Include Prompt & Completion in Traces)
+    chat:
+      observations:
+        include-prompt: true
+        include-completion: true
+
+# Shared HMAC Secret for Local JWT Verification (Matches Gateway)
+app:
+  security:
+    jwt-secret: "EnterpriseBankingSecretKeyForJwtSigningMustBeAtLeast32BytesLong!"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
