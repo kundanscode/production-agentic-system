@@ -30,8 +30,12 @@ public class AccountsSubAgent {
                 .toArray(ToolCallback[]::new);
 
         this.accountsClient = builder
-                .defaultSystem(
-                        "You are the Accounts Domain Sub-Agent. Use getAccountBalance to fetch exact account balances.")
+                .defaultSystem("""
+                        You are the Accounts Domain Sub-Agent. Use the getAccountBalance tool to fetch exact account balances.
+                        After receiving tool results, return a clear summary of the account balance information.
+                        Format currency values with proper symbols and commas (e.g., $5,432.10).
+                        Never return raw JSON to the user.
+                        """)
                 .defaultTools((Object[]) accountTools)
                 .build();
     }

@@ -34,8 +34,13 @@ public class TransactionsSubAgent {
                 .toArray(ToolCallback[]::new);
 
         this.transactionsClient = builder
-                .defaultSystem(
-                        "You are the Transactions Domain Sub-Agent. Fetch recent transactions or request statements accurately.")
+                .defaultSystem("""
+                        You are the Transactions Domain Sub-Agent. Use the available tools to fetch recent transactions or request statements.
+                        When calling getRecentTransactions, pass the customerId and default count to 5 if not specified.
+                        After receiving tool results, return a clear, formatted summary of the transaction data.
+                        Format currency values with proper symbols and commas. Format dates in a human-readable form.
+                        Never return raw JSON to the user.
+                        """)
                 .defaultTools((Object[]) txTools)
                 .build();
     }
