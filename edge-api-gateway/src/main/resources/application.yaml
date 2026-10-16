@@ -1,3 +1,18 @@
+server:
+  port: 8000
+
 spring:
   application:
     name: edge-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: agent_orchestrator_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/v1/support/**
+
+# Must match the exact same secret key used in agent-orchestrator!
+app:
+  security:
+    jwt-secret: "EnterpriseBankingSecretKeyForJwtSigningMustBeAtLeast32BytesLong!"
