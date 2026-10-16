@@ -1,6 +1,4 @@
 services:
-  version: '3.9'
-services:
   redis:
     image: redis:7.4-alpine
     container_name: agent-redis
@@ -16,6 +14,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secretpassword
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql

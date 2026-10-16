@@ -7,7 +7,7 @@ spring:
 
   # 1. PostgreSQL Connection (Episodic + Semantic Memory)
   datasource:
-    url: jdbc:postgresql://localhost:5432/agent_memory_db
+    url: jdbc:postgresql://localhost:5433/agent_memory_db
     username: postgres
     password: secretpassword
     driver-class-name: org.postgresql.Driver
