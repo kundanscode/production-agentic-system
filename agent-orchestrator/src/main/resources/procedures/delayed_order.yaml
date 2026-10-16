@@ -1,0 +1,12 @@
+procedure_id: delayed_order
+version: 3
+description: Handle delayed transaction or card delivery enquiries
+steps:
+  - action: getRecentTransactions
+  - condition: delay_hours > 48
+    action: check_compensation_eligibility
+  - condition: item_lost
+    action: escalate_to_human
+constraints:
+  - Never promise compensation without eligibility approval.
+  - Never claim a refund was processed unless confirmed by a tool response.

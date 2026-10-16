@@ -1,0 +1,15 @@
+procedure_id: chequebook_request
+version: 2
+description: Handle customer cheque book delivery requests safely
+steps:
+  - step: 1
+    action: Ask the customer to confirm their registered delivery address before placing the cheque book order.
+  - step: 2
+    condition: customer_confirmed_address == false
+    action: Call requestChequeBook with addressConfirmed=false to retrieve the registered address on file and show it to the customer.
+  - step: 3
+    condition: customer_confirmed_address == true
+    action: Call requestChequeBook with addressConfirmed=true to dispatch the cheque book.
+constraints:
+  - NEVER submit a cheque book order with addressConfirmed=true unless the customer has explicitly confirmed their address in the conversation.
+  - NEVER promise fee waivers or compensation without checking account tier eligibility.
